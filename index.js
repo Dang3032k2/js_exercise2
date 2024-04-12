@@ -10,8 +10,8 @@ const countAge = (user) => {
 };
 
 console.log("\nBai 1");
-const users1 = (users) => {
-  const femaleUsers = users.filter((user) => {
+const femaleUsers = (users) =>
+  users.filter((user) => {
     const age = countAge(user);
     if (user.gender === "Female" && age >= 18 && age <= 25) {
       user.stocking = (age <= 20) | (age >= 22) ? true : false;
@@ -19,9 +19,7 @@ const users1 = (users) => {
     }
     return false;
   });
-  return femaleUsers;
-};
-console.log("users1:", JSON.stringify(users1(users), null, 2));
+console.log("female users:", JSON.stringify(femaleUsers(users), null, 2));
 
 // Bài 2: Viết hàm trả về danh sách gồm: tỷ lệ Male, Famale và đưa ra danh sách số lượng user theo từng độ tuổi
 // VD: {
@@ -44,31 +42,37 @@ console.log("users1:", JSON.stringify(users1(users), null, 2));
 // }
 
 console.log("\nBai 2");
-const bai2 = (users) => {
-  let manCount = 0;
+const userStatistics = (users) => {
+  let maleCount = 0;
   let femaleCount = 0;
-  const statistics = {};
-  users.forEach((user) => {
+  const userQuantity = users.length;
+  return users.reduce((statistics, user) => {
     const age = countAge(user);
-    if ((user.gender === "Male") | (user.gender === "Female")) {
-      if (user.gender === "Male") {
-        manCount++;
+    const gender = user.gender;
+    if ((gender === "Male") | (gender === "Female")) {
+      if (!statistics[gender]) {
+        statistics[gender] = {};
+      }
+      if (gender === "Male") {
+        maleCount++;
+        statistics[gender].percents = (maleCount * 100) / userQuantity;
       } else {
         femaleCount++;
+        statistics[gender].percents = (femaleCount * 100) / userQuantity;
       }
-      if (!statistics[user.gender]) {
-        statistics[user.gender] = {};
+      if (!statistics[gender]) {
+        statistics[gender] = {};
       }
-      if (!statistics[user.gender][age]) {
-        statistics[user.gender][age] = 1;
+      if (!statistics[gender][age]) {
+        statistics[gender][age] = 1;
       } else {
-        statistics[user.gender][age] += 1;
+        statistics[gender][age] += 1;
       }
     }
-  });
-  return statistics;
+    return statistics;
+  }, {});
 };
-console.log(JSON.stringify(bai2(users), null, 2));
+console.log(JSON.stringify(userStatistics(users), null, 2));
 
 // Bài 3: Tạo hàm truyền vào độ tuổi getUserSameAge(18). Trả về danh sách các user có độ tuổi bằng hoặc gần bằng hơn kém nhau 1-2 tuổi giá trị được truyền vào.
 
